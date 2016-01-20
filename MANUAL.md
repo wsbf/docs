@@ -7,11 +7,14 @@ This manual contains everything that the Computer Engineer at WSBF needs to know
 - Domains and Email Forwarding
 - Hardware Infrastructure
 - Files and Software Infrastructure
+- Miscellaneous Tasks
 - Troubleshooting
 
 ## Getting Started
 
-The role of the Computer Engineer is to maintain the station's computing resources, which include the website and studio software. Here is a reference of programming languages that are used throughout WSBF:
+The role of the Computer Engineer is to maintain the station's computing resources, which include the website and studio software. The computer engineer should be able to work with remote file systems (Secure Shell), databases, and websites. Contact the previous engineer for password information.
+
+Here is a reference of programming languages that are used throughout WSBF:
 
 - [MySQL](https://dev.mysql.com): database query language
 - [PHP](http://php.net/manual/en): scripting language for server-side scripts
@@ -25,6 +28,10 @@ There are also some important software libraries:
 - [Bootstrap](https://getbootstrap.com) (HTML/CSS): Styling framework
 
 Being familiar with these technologies will allow you to manage all of WSBF's software and add whatever features you want, but if you aren't familiar with all of them, don't try to learn them all at once! Study one language or library based on what you need at the time, or else you might burn out. It is possible to become skilled in all of these languages, but it takes time. Spend some time reading through WSBF's code at your leisure, seek to understand the code before you change anything.
+
+#### WARNING
+
+WSBF operates under the jurisdiction of Clemson University and the FCC, so it is important that WSBF is not a liability to these parties. __Placing lewd or vulgar content on the website may prompt severe punishment from the Clemson Board of Trustees or the FCC.__
 
 ## Domains and Email Forwarding
 
@@ -78,7 +85,7 @@ All of WSBF's hardware resources are located in the WSBF suite. They are listed 
 
 Paul is a Windows server who runs an RDS program for the radio stream.
 
-*Paul also currently has the old site for `wsbf.clemson.edu` and some other old but possibly important files that need to be sorted through.
+* Paul also currently has the old site for `wsbf.clemson.edu` and some other old but possibly important files that need to be sorted through.
 
 `130.127.17.4` (George)
 
@@ -88,7 +95,7 @@ George is the web server. George hosts the website and runs the Apache web serve
 
 Automatrix is the Linux machine in Studio A. It runs ZAutomate, which includes Automation, the DJ Studio, and the PSA Cart.
 
-*Automatrix normally mounts the digital library through John, but because of issues with BC_China, George currently hosts the digital library, so Automatrix mounts the library through George.
+* Automatrix normally mounts the digital library through John, but because of issues with BC_China, George currently hosts the digital library, so Automatrix mounts the library through George.
 
 `130.127.17.6` (Transcode)
 
@@ -98,7 +105,7 @@ Transcode is a Linux machine currently located in Studio B. It runs DarkIce and 
 
 John is the archiver. John records everything that is on air (except for Automation) and writes each show to a file. John also hosts the digital library.
 
-*Because of issues with BC_China, John currently mounts the digital library through George.
+* Because of issues with BC_China, John currently mounts the digital library through George.
 
 `130.127.17.40`
 
@@ -110,7 +117,7 @@ Currently, the two computers in Studio A share a keyboard and mouse (probably by
 
 Ringo is the database replicator... so he replicates the database. Probably need to find more about that.
 
-*Ringo saves archives to BC_China?
+* Ringo saves archives to BC_China?
 
 __TODO__: incorporate notes from state of archiving
 
@@ -124,7 +131,7 @@ __TODO__: Of course, there is more hardware involved in transmitting the audio s
 
 Within each computer there is a set of critical files and software that must be maintained. In general, these computers should be able to run the following software as long as they are using a modern version of Ubuntu.
 
-*Any remaining Windows machines that perform back-end tasks (such as Paul) should be eventually migrated to Linux.
+* Any remaining Windows machines that perform back-end tasks (such as Paul) should be eventually migrated to Linux.
 
 `130.127.17.2` (Paul)
 
@@ -133,6 +140,7 @@ __TODO__
 `130.127.17.4` (George)
 
 Software
+
 - Apache 2 web server
 - MySQL database
 - modules for PHP with Apache and MySQL
@@ -166,7 +174,45 @@ Files
 
 __TODO__
 
+## Miscellaneous Tasks
+
+### Operating the Fishbowl
+
+The senior staff use the "fishbowl" at the start of each semester to prioritize DJs by quality, so that the best DJs receive the best schedule options for the semester.
+
+1. [Archive](http://new.wsbf.net/wizbif/fishbowl/fishbowl_clear_table.php) the fishbowl. The `fishbowl` table is copied to `fishbowl_log` and then cleared.
+2. Open the fishbowl config file at `/var/www/wizbif/fishbowl/fishbowl_config.php` and set the semester (`spring` or `fall`), the start date for counting CD reviews, and the deadline for DJs to submit their fishbowl application. Make sure that the deadline is before the senior staff meeting on the night of show picks.
+3. Add a link to the [fishbowl app](http://new.wsbf.net/wizbif/fishbowl/fishbowl_app.php) to the main page.
+4. Notify all active DJs that they are required to fill out their applications by the deadline.
+5. After the deadline, let the senior staff [rate](http://new.wsbf.net/wizbif/fishbowl/fishbowl_review.php) each of the applications.
+6. [Print](http://new.wsbf.net/wizbif/fishbowl/fishbowl_print.php) the results of the fishbowl. The first bowl contains the highest-rated DJs, and so on. The order within each fishbowl is random.
+
+### Adding Carts to the Cart Machine
+
+DJs use the "cart machine" to play station IDs, public service announcements, underwritings, and other non-musical audio clips.
+
+1. Make sure that the audio file is an MP3. Use an application like `ffmpeg` or a website like [media.io](http://media.io) to convert files.
+2. Move the audio file into `/var/www/wizbif/ZAutoLib/carts` on George.
+3. Log in to [phpmyadmin](http://wsbf.net/phpmyadmin), select the `def_cart_type` table, and find the `cart_typeID` of the audio file.
+4. Select the `libcart` table and insert a new record. Select the start and end dates to air the PSA, the `cart_typeID`, the title, and the filename. Leave any other fields blank. Use the existing records to guide your choices.
+5. Reload the Cart Machine in Studio A and confirm that the new cart appears. Note: if the cart is a PSA or underwriting, Automation will play it roughly once every two hours. There is currently no way to set the frequency with which Automation plays carts.
+6. If the new cart is an underwriting, leave a note on the main desk in Studio A to tell DJs how often to play the underwriting.
+
+### Resetting Account Passwords
+
+The current website doesn't have an automated way for users to reset their own passwords if they forget, so the computer engineer must do a few things manually.
+
+1. When someone requests a password reset, verify that he or she is a DJ at the station. Ask for his or her name and email, and search the `users` table for the person's username.
+2. Select the `password_reset` table and insert a new record with the username, a random string as the `transaction_id`, and an `expiration_date` (usually within 24 hours of the request) for the user to reset his or her password.
+3. Email the user with a link to the password reset page. This link should have the form `http://new.wsbf.net/wizbif/password/password_reset.php?transaction_id=[transaction id]`. Warn the user that the link will eventually expire.
+
 ## Troubleshooting
+
+Here are some solutions to common problems that have occurred before. In general, if you can't solve a problem, contact a former computer engineer. Some former engineers are listed here with most recent first:
+
+* Yates Monteith `jymonte@g.clemson.edu`
+* David Cohen `dcohenii@gmail.com`
+* Zach Musgrave `zmusgrave@gmail.com`
 
 ### Power Outages
 

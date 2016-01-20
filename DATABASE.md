@@ -58,7 +58,7 @@ def_mediums
 
 Contains the index and name of each album medium (CD, Vinyl, etc.).
 
-*This table is used for albums but it does not seem to be used by the website.
+* This table is used for albums but it does not seem to be used by the website.
 
 ```
 def_positions
@@ -89,7 +89,7 @@ def_show_times
 
 Contains the index and name of each show time in the schedule.
 
-*This table could be used to normalize columns in other tables, such as `schedule.start_time` and `schedule.end_time`.
+* This table could be used to normalize columns in other tables, such as `schedule.start_time` and `schedule.end_time`.
 
 ```
 def_show_types
@@ -137,12 +137,13 @@ fishbowl
 
 Contains a record of every fishbowl application for the current semester.
 
-*Some columns could be computed from other tables:
+* Some columns could be computed from other tables:
+
 * `semesters` from the `schedule` and `schedule_hosts` tables
 * `missedShows` from the `show` and `show_host` tables
 * `dead_hours` from the `schedule` and `schedule_hosts` tables
 
-*Some column names use camelCase, which is inconsistent with the rest of the database.
+* Some column names use camelCase, which is inconsistent with the rest of the database.
 
 ```
 fishbowl_log
@@ -161,7 +162,9 @@ fishbowl_log
 	weight
 ```
 
-Contains a record of every fishbowl application from the previous semester (exact same structure as `fishbowl`).
+Contains a record of every fishbowl application from previous semesters (exact same structure as `fishbowl`).
+
+* `fishbowl` and `fishbowl_log` could be merged into one table with a `current` column to distinguish records for the current semester, as in the `schedule` table.
 
 ```
 history
@@ -175,7 +178,7 @@ history
 
 Contains information and stories for several WSBF alumni.
 
-*I'm not sure if this table is used by any of the old websites or elsewhere, but it should be incorporated into the current website somehow.
+* I'm not sure if this table is used by any of the old websites or elsewhere, but it should be incorporated into the current website somehow.
 
 ```
 TODO
@@ -261,7 +264,7 @@ libreview
 
 Contains records for album reviews.
 
-*The `reviewer` column may be redundant since `users.preferred_name` could be used instead.
+* The `reviewer` column may be redundant since `users.preferred_name` could be used instead.
 
 ```
 libtrack
@@ -296,8 +299,8 @@ logbook
 
 Contains every track that is logged from the online logbook.
 
-*Currently there are no records with `deleted=1`. Was a delete option intended for the online logbook? Who knows.
-*The logbook could be designed such that `played` and `deleted` are not needed. Just have the logbook REPLACE when a track is played.
+* Currently there are no records with `deleted=1`. Was a delete option intended for the online logbook? Who knows.
+* The logbook could be designed such that `played` and `deleted` are not needed. Just have the logbook REPLACE when a track is played.
 
 ```
 mailing_list
@@ -309,7 +312,7 @@ mailing_list
 
 Contains emails for "people who just want to receive emails from WSBF." Doesn't represent the user mailing list.
 
-*Not yet sure if it is used anywhere.
+* Not yet sure if it is used anywhere.
 
 ```
 password_reset
@@ -321,7 +324,7 @@ password_reset
 
 Contains records of outstanding password reset requests by users who forgot their passwords.
 
-*Currently there is a web interface to reset a user's password, but the record must be inserted manually by the computer engineer.
+* Currently there is a web interface to reset a user's password, but the record must be inserted manually by the computer engineer.
 
 ```
 now_playing
@@ -333,7 +336,7 @@ now_playing
 
 Contains the logbook index of the currently playing track.
 
-*The other two columns may be redundant if the record is joined with columns in the logbook. Since this table seems to only ever have one row, it makes little difference.
+* The other two columns may be redundant if the record is joined with columns in the logbook. Since this table seems to only ever have one row, it makes little difference.
 
 ```
 schedule
@@ -351,7 +354,7 @@ schedule
 
 Contains the schedule of shows, including past shows.
 
-*Genre names are stored instead of genre IDs, so there is an opportunity here for normalization. Also, they are actually general genres.
+* Genre names are stored instead of genre IDs, so there is an opportunity here for normalization. Also, they are actually general genres.
 
 ```
 schedule_hosts
@@ -377,8 +380,8 @@ show
 
 Contains a record of every show that has been logged in the logbook.
 
-*`show_name` is already stored in `schedule`, so it could be removed. However, a DJ may want to be able to have show-specific names.
-*`show_typeID` is already stored is `schedule`, but not all shows have a `scheduleID`.
+* `show_name` is already stored in `schedule`, so it could be removed. However, a DJ may want to be able to have show-specific names.
+* `show_typeID` is already stored is `schedule`, but not all shows have a `scheduleID`.
 
 ```
 show_hosts
@@ -390,7 +393,7 @@ show_hosts
 
 Contains the hosts for every show in `show`.
 
-*`show_alias` is already stored in `schedule_hosts`, so it could be removed.
+* `show_alias` is already stored in `schedule_hosts`, so it could be removed.
 
 ```
 staff
@@ -429,7 +432,7 @@ sub_request
 
 Contains a record of every show sub request ever submitted.
 
-*The columns marked with an asterisk could be replaced with scheduleID.
+* The columns marked with an asterisk could be replaced with scheduleID.
 
 ```
 users
@@ -451,6 +454,6 @@ users
 
 Contains a record for every WSBF user.
 
-*Profile pictures are stored in `/var/www/wizbif/profiles`
+* Profile pictures are stored in `/var/www/wizbif/profiles`
 
-*Currently, `username` is the primary key, which means that other tables must use usernames as foreign keys and users cannot change their username. In the future it may be a good idea to add a `userID` column and apply it throughout the database.
+* Currently, `username` is the primary key, which means that other tables must use usernames as foreign keys and users cannot change their username. In the future it may be a good idea to add a `userID` column and apply it throughout the database.
