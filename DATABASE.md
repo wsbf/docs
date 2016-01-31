@@ -1,3 +1,6 @@
+The Database Reference
+======================
+
 This document defines the schema of the MySQL database and describes the purpose of each table. Table and column names are provided, and keys are marked as such. For more detailed information, such as column data types, go to [wsbf.net/phpmyadmin](http://wsbf.net/phpmyadmin).
 
 TODO: convert collation of databases, tables, and columns to `utf8_general_ci`.
@@ -14,6 +17,8 @@ libplaylist
 office_hours
 staff_picks
 ```
+
+## Tables
 
 ```
 def_airability
@@ -49,6 +54,8 @@ def_general_genres
 	genre
 ```
 
+Contains the index and name of each general genre.
+
 ```
 def_mediums
 
@@ -57,8 +64,6 @@ def_mediums
 ```
 
 Contains the index and name of each album medium (CD, Vinyl, etc.).
-
-* This table is used for albums but it does not seem to be used by the website.
 
 ```
 def_positions

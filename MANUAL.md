@@ -89,23 +89,21 @@ Paul is a Windows server who runs an RDS program for the radio stream.
 
 `130.127.17.4` (George)
 
-George is the web server. George hosts the website and runs the Apache web server and MySQL database.
+George is the web server. George runs the Apache web server, the MySQL database, and Icecast, which transports the audio stream from Transcode to the Internet at `stream.wsbf.net:8000`.
+
+* George mounts ZAutoLib through John, although I'm not yet sure how.
 
 `130.127.17.5` (Automatrix)
 
-Automatrix is the Linux machine in Studio A. It runs ZAutomate, which includes Automation, the DJ Studio, and the PSA Cart.
-
-* Automatrix normally mounts the digital library through John, but because of issues with BC_China, George currently hosts the digital library, so Automatrix mounts the library through George.
+Automatrix is the Linux machine in Studio A. It runs ZAutomate, which includes Automation, the DJ Studio, and the PSA Cart. Automatrix mounts ZAutoLib (the music library) through John.
 
 `130.127.17.6` (Transcode)
 
-Transcode is a Linux machine currently located in Studio B. It runs DarkIce and IceCast, which provide radio streaming to the Internet at stream.wsbf.net.
+Transcode is a Linux machine currently located in Studio B. It runs Darkice, which digitizes and streams the audio signal from Studio A to the web server.
 
 `130.127.17.39` (John)
 
-John is the archiver. John records everything that is on air (except for Automation) and writes each show to a file. John also hosts the digital library.
-
-* Because of issues with BC_China, John currently mounts the digital library through George.
+John is the archiver. John records everything that is on air and writes each show to a file. John also mounts ZAutoLib (the music library).
 
 `130.127.17.40`
 
@@ -117,13 +115,15 @@ Currently, the two computers in Studio A share a keyboard and mouse (probably by
 
 Ringo is the database replicator... so he replicates the database. Probably need to find more about that.
 
-* Ringo saves archives to BC_China?
-
 __TODO__: incorporate notes from state of archiving
 
-`130.127.17.?`
+`130.127.17.?` (Production Director)
 
-The General Manager, Music Director, and Production Director each have their own Windows machines in the WSBF suite.
+__TODO__
+
+`130.127.17.?` (Music Director)
+
+__TODO__
 
 __TODO__: Of course, there is more hardware involved in transmitting the audio stream from Studio A to the studio hub in Studio B and the transmitter shack on Kite Hill, but they are generally managed by the Chief Engineer. At some point the backup automation computer in the shack should be documented here.
 
@@ -144,23 +144,28 @@ Software
 - Apache 2 web server
 - MySQL database
 - modules for PHP with Apache and MySQL
+- Icecast
 
 Files
 
-	/etc/apache2/
-	├── sites-available/
-	│   ├── default
-	│   ├── dev.wsbf.net
-	│   ├── m.wsbf.net
-	│   ├── new.wsbf.net
-	│   ├── wsbf.clemson.edu
-	│   └── wsbf.net
-	├── sites-enabled/
-	│   └── ... (symlinks to files in sites-available/)
-	├── apache2.conf
-	└── httpd.conf
+	/etc/
+	├── apache2/
+	│   ├── sites-available/
+	│   │   ├── default
+	│   │   ├── dev.wsbf.net
+	│   │   ├── m.wsbf.net
+	│   │   ├── new.wsbf.net
+	│   │   ├── wsbf.clemson.edu
+	│   │   └── wsbf.net
+	│   ├── sites-enabled/
+	│   │   └── ... (symlinks to files in sites-available/)
+	│   ├── apache2.conf
+	│   └── httpd.conf
+	└── php5/apache2/
+		└── php.ini
 
 	/home/compe/
+	└── RIPPED_MUSIC/
 		__TODO__
 
 	/var/www/
@@ -171,6 +176,22 @@ Files
 		├── api/
 		├── blog/
 		└── wizbif/
+
+__TODO__
+
+`130.127.17.5` (Automatrix)
+
+__TODO__
+
+`130.127.17.6` (Transcode)
+
+__TODO__
+
+`130.127.17.39` (John)
+
+__TODO__
+
+`130.127.17.42` (Ringo)
 
 __TODO__
 
@@ -222,11 +243,11 @@ In case of a power outages, follow these steps to the best of your ability:
 2. Ensure that the transmitter and exciter are on.
 3. Ensure that the transmitter computer is on. Backup automation and transmitter management software should start automatically.
 4. Go to the station.
-5. Restart George the Web server.
-6. Restart Automatrix. When George is online, Automatrix will mount ZAutoLib through George. When Automation, DJ Studio, and Cart Machine initialize, they should be able to load tracks if ZAutoLib is mounted.
+5. Restart John. John mounts ZAutoLib, so ensure that ZAutoLib is on also. (Archiving should start automatically?)
+6. Restart George the Web server.
+6. Restart Automatrix. Automatrix will mount ZAutoLib through John. When Automation, DJ Studio, and Cart Machine initialize, they should be able to load tracks if ZAutoLib is mounted.
 8. If the station has been down for more than 4 hours, play the Sign On cart. In DJ Studio, search "psa", it should be first on the list.
 9. Start Automation.
-10. Restart John. Archiving should start automatically.
 
 ### Streaming/Broadcasting Issues
 

@@ -1,3 +1,7 @@
+The following table lists all of the critical machines in the WSBF suite. There are some other computers in the lounge and tons of hardware in the engineering closet that are not documented here.
+
+__TODO__: Update Automatrix
+
 <table>
 	<tr>
 		<th>Machine Name</th>
@@ -109,20 +113,6 @@
 		<td>300 GB</td>
 		<td>ZAutomate (Cart Machine, DJ Studio, Automation)</td>
 		<td>This was the old production machine in Studio B according to oral history</td>
-	</tr>
-
-	<tr>
-		<td>General Manager</td>
-		<td>Lounge</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
 	</tr>
 
 	<tr>
