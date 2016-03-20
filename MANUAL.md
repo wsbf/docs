@@ -5,6 +5,7 @@ This manual contains everything that the Computer Engineer at WSBF needs to know
 
 - Getting Started
 - Domains and Email Forwarding
+- Firewall
 - Hardware Infrastructure
 - Files and Software Infrastructure
 - Miscellaneous Tasks
@@ -27,7 +28,7 @@ There are also some important software libraries:
 - [AngularJS](https://angularjs.org) (HTML/Javascript): Web application framework
 - [Bootstrap](https://getbootstrap.com) (HTML/CSS): Styling framework
 
-Being familiar with these technologies will allow you to manage all of WSBF's software and add whatever features you want, but if you aren't familiar with all of them, don't try to learn them all at once! Study one language or library based on what you need at the time, or else you might burn out. It is possible to become skilled in all of these languages, but it takes time. Spend some time reading through WSBF's code at your leisure, seek to understand the code before you change anything.
+Being familiar with these technologies will allow you to manage all of WSBF's software and add whatever features you want, but if you aren't familiar with all of them, don't try to learn them all at once! Study one language or library based on what you need at the time, or else you might burn out. It is possible to become skilled in all of these languages, but it takes time. Spend some time reading through WSBF's code at your leisure, and seek to understand the code before you change anything.
 
 #### WARNING
 
@@ -77,6 +78,16 @@ In addition, every staff member should be able to send mail from their wsbf emai
 
 TODO: include information on smtp.gmail.com hack.
 
+## Firewall
+
+Since WSBF's computing infrastructure exists on Clemson University's `130.127` network, WSBF computers are subject to the campus firewall, which allows outgoing traffic but blocks unrequested incoming traffic. CCIT maintains a list of exceptions for WSBF computers. The following ports should be allowed to receive incoming traffic:
+
+	wsbf.net:80 (http)
+	wsbf.net:443 (https)
+	wsbf.net:8000 (radio stream)
+
+All other ports on all WSBF computers should be kept in the default firewall policy. The above exceptions essentially mean that the web server should be allowed to serve content and the audio stream to the Internet. Use the Clemson VPN to access other services such as SSH from off-campus.
+
 ## Hardware Infrastructure
 
 All of WSBF's hardware resources are located in the WSBF suite. They are listed below by IP address:
@@ -89,13 +100,13 @@ Paul is a Windows server who runs an RDS program for the radio stream.
 
 `130.127.17.4` (George)
 
-George is the web server. George runs the Apache web server, the MySQL database, and Icecast, which transports the audio stream from Transcode to the Internet at `stream.wsbf.net:8000`.
+George is the web server. George runs the Apache web server, the MySQL database, and Icecast, which transports the audio stream from Transcode to the Internet at `stream.wsbf.net:8000`. George uses Samba to access ZAutoLib through John.
 
-* George mounts ZAutoLib through John, although I'm not yet sure how.
+* George also runs automysqlbackup?
 
 `130.127.17.5` (Automatrix)
 
-Automatrix is the Linux machine in Studio A. It runs ZAutomate, which includes Automation, the DJ Studio, and the PSA Cart. Automatrix mounts ZAutoLib (the music library) through John.
+Automatrix is the Linux machine in Studio A. It runs ZAutomate, which includes Automation, the DJ Studio, and the PSA Cart. Automatrix mounts ZAutoLib through John.
 
 `130.127.17.6` (Transcode)
 
@@ -115,15 +126,15 @@ Currently, the two computers in Studio A share a keyboard and mouse (probably by
 
 Ringo is the database replicator... so he replicates the database. Probably need to find more about that.
 
-__TODO__: incorporate notes from state of archiving
-
 `130.127.17.?` (Production Director)
 
 __TODO__
 
-`130.127.17.?` (Music Director)
+`130.127.17.121` (Music Director)
 
 __TODO__
+
+__TODO__: incorporate notes from state of archiving
 
 __TODO__: Of course, there is more hardware involved in transmitting the audio stream from Studio A to the studio hub in Studio B and the transmitter shack on Kite Hill, but they are generally managed by the Chief Engineer. At some point the backup automation computer in the shack should be documented here.
 
@@ -144,14 +155,17 @@ Software
 - Apache 2 web server
 - MySQL database
 - modules for PHP with Apache and MySQL
+- phpmyadmin
+- Let's Encrypt
 - Icecast
+- automysqlbackup
 
 Files
 
 	/etc/
 	├── apache2/
 	│   ├── sites-available/
-	│   │   ├── default
+	│   │   ├── 000-default
 	│   │   ├── dev.wsbf.net
 	│   │   ├── m.wsbf.net
 	│   │   ├── new.wsbf.net
@@ -159,14 +173,14 @@ Files
 	│   │   └── wsbf.net
 	│   ├── sites-enabled/
 	│   │   └── ... (symlinks to files in sites-available/)
-	│   ├── apache2.conf
-	│   └── httpd.conf
+	│   └── apache2.conf
 	└── php5/apache2/
 		└── php.ini
 
 	/home/compe/
 	└── RIPPED_MUSIC/
-		__TODO__
+		├── albums/
+		└── carts/
 
 	/var/www/
 	├── dev/
@@ -177,15 +191,25 @@ Files
 		├── blog/
 		└── wizbif/
 
-__TODO__
-
 `130.127.17.5` (Automatrix)
 
 __TODO__
 
 `130.127.17.6` (Transcode)
 
-__TODO__
+Software
+
+- Darkice
+
+Files
+
+	/home/compe/
+	├── darkice.cfg
+	└── WSBF_DARKICE_README.txt
+
+	/usr/local/bin/
+	├── alsa_force-reload.sh
+	└── darkice_start_on_boot.sh
 
 `130.127.17.39` (John)
 
@@ -194,6 +218,16 @@ __TODO__
 `130.127.17.42` (Ringo)
 
 __TODO__
+
+### Let's Encrypt: TLS Encryption
+
+- Clone the git repository to `/opt/letsencrypt`
+- Request certificates for each domain
+```
+./letsencrypt-auto certonly --webroot -w /var/www/wsbf -d wsbf.net
+```
+
+- Run `./letsencrypt-auto` to install the certificates to each Apache virtual host
 
 ## Miscellaneous Tasks
 
@@ -231,6 +265,7 @@ The current website doesn't have an automated way for users to reset their own p
 
 Here are some solutions to common problems that have occurred before. In general, if you can't solve a problem, contact a former computer engineer. Some former engineers are listed here with most recent first:
 
+- Ben Shealy `bentshermann@gmail.com`
 * Yates Monteith `jymonte@g.clemson.edu`
 * David Cohen `dcohenii@gmail.com`
 * Zach Musgrave `zmusgrave@gmail.com`
@@ -243,11 +278,12 @@ In case of a power outages, follow these steps to the best of your ability:
 2. Ensure that the transmitter and exciter are on.
 3. Ensure that the transmitter computer is on. Backup automation and transmitter management software should start automatically.
 4. Go to the station.
-5. Restart John. John mounts ZAutoLib, so ensure that ZAutoLib is on also. (Archiving should start automatically?)
-6. Restart George the Web server.
-6. Restart Automatrix. Automatrix will mount ZAutoLib through John. When Automation, DJ Studio, and Cart Machine initialize, they should be able to load tracks if ZAutoLib is mounted.
-8. If the station has been down for more than 4 hours, play the Sign On cart. In DJ Studio, search "psa", it should be first on the list.
-9. Start Automation.
+5. Turn on all of the "Program 1" buttons on the sound board. Every single one of them.
+6. Restart John. John mounts ZAutoLib, so ensure that ZAutoLib is on also. (Archiving should start automatically)
+7. Restart George the Web server.
+8. Restart Automatrix. Automatrix will mount ZAutoLib through John. When Automation, DJ Studio, and Cart Machine initialize, they should be able to load tracks if ZAutoLib is mounted.
+9. If the station has been down for more than 4 hours, play the Sign On cart. In DJ Studio, search "psa", it should be first on the list.
+10. Start Automation.
 
 ### Streaming/Broadcasting Issues
 

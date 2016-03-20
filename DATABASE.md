@@ -7,15 +7,12 @@ TODO: convert collation of databases, tables, and columns to `utf8_general_ci`.
 
 Currently unused tables:
 ```
-check_out
-check_out_library
-def_blog_tag
-engineering_blog
-engineering_blog_tags
-front_page
+history
+intern_list
 libplaylist
+likes
+mailing_list
 office_hours
-staff_picks
 ```
 
 ## Tables
@@ -172,25 +169,6 @@ Contains a record of every fishbowl application from previous semesters (exact s
 * `fishbowl` and `fishbowl_log` could be merged into one table with a `current` column to distinguish records for the current semester, as in the `schedule` table.
 
 ```
-history
-
-	historyID
-	contributor_name
-	contributor_email
-	contributor_story
-	TODO ...
-```
-
-Contains information and stories for several WSBF alumni.
-
-* I'm not sure if this table is used by any of the old websites or elsewhere, but it should be incorporated into the current website somehow.
-
-```
-TODO
-intern_list
-```
-
-```
 libaction
 
 	actionID
@@ -308,18 +286,6 @@ Contains every track that is logged from the online logbook.
 * The logbook could be designed such that `played` and `deleted` are not needed. Just have the logbook REPLACE when a track is played.
 
 ```
-mailing_list
-
-	email_address
-	first_name
-	last_name
-```
-
-Contains emails for "people who just want to receive emails from WSBF." Doesn't represent the user mailing list.
-
-* Not yet sure if it is used anywhere.
-
-```
 password_reset
 
 	transaction_id
@@ -329,7 +295,7 @@ password_reset
 
 Contains records of outstanding password reset requests by users who forgot their passwords.
 
-* Currently there is a web interface to reset a user's password, but the record must be inserted manually by the computer engineer.
+* Currently there is a web interface to reset a user's password, but the computer engineer must email the URL to the user.
 
 ```
 now_playing

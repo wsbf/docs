@@ -118,9 +118,9 @@ __TODO__: Update Automatrix
 	<tr>
 		<td>Music Director</td>
 		<td>Lounge</td>
-		<td></td>
+		<td>130.127.17.121</td>
 		<td>Windows 7</td>
-		<td></td>
+		<td>(custom)</td>
 		<td>5+ years</td>
 		<td></td>
 		<td></td>
