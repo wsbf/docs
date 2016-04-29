@@ -413,12 +413,9 @@ users
 	first_name
 	last_name
 	preferred_name
-	phone_number
 	email_addr
-	cuid
 	teamID (-> def_teams)
 	statusID (-> def_status)
-	sms_recv
 	profile_paragraph
 	has_picture
 ```
