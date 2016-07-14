@@ -222,9 +222,6 @@ Software
 
 Files
 
-	/home/compe/
-	└── fetch_external_metadata.pl
-
 	/usr/local/bin/
 	└── streamripper_start_on_boot.sh
 
