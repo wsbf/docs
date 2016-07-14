@@ -23,6 +23,6 @@ The old website `new.wsbf.net` had embedded PHP in every page, which was a mess.
 
 ...
 
-### Infrastructure automation with Ansible
+### Configuration management with Ansible
 
 ...

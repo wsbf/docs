@@ -42,12 +42,12 @@ WSBF has two domains:
 
 2. [wsbf.net](wsbf.net) is WSBF's current domain. It is registered with [Namecheap](namecheap.com), along with all of its subdomains.
 
-Subdomains (`*.wsbf.net`) are defined by A Records in the DNS settings. The following subdomains should be defined:
+The following sub-domains should be defined in the DNS settings:
 
 	dev.wsbf.net
 	m.wsbf.net
 	new.wsbf.net
-	stream.wsbf.net
+	www.wsbf.net
 
 Namecheap also provides email forwarding from `*@wsbf.net` to the personal emails of senior staff. Consequently, these email forwarding rules must be updated whenever staff changes.
 
@@ -84,7 +84,6 @@ Since WSBF's computing infrastructure exists on Clemson University's `130.127` n
 
 	wsbf.net:80 (http)
 	wsbf.net:443 (https)
-	wsbf.net:8000 (radio stream)
 
 All other ports on all WSBF computers should be kept in the default firewall policy. The above exceptions essentially mean that the web server should be allowed to serve content and the audio stream to the Internet. Use the Clemson VPN to access other services such as SSH from off-campus.
 
@@ -100,13 +99,13 @@ Paul is a Windows server who runs an RDS program for the radio stream.
 
 `130.127.17.4` (George)
 
-George is the web server. George runs the Apache web server, the MySQL database, and Icecast, which transports the audio stream from Transcode to the Internet at `stream.wsbf.net:8000`. George uses Samba to access ZAutoLib through John.
+George is the web server. George runs the Apache web server, the MySQL database, and Icecast, which serves the audio stream from Transcode. George uses Samba to access ZAutoLib through John.
 
 * George also runs automysqlbackup?
 
 `130.127.17.5` (Automatrix)
 
-Automatrix is the Linux machine in Studio A. It runs ZAutomate, which includes Automation, the DJ Studio, and the PSA Cart. Automatrix mounts ZAutoLib through John.
+Automatrix is the Linux machine in Studio A. It runs ZAutomate, which includes Automation, the DJ Studio, and the Cart Machine. Automatrix mounts ZAutoLib through John.
 
 `130.127.17.6` (Transcode)
 
@@ -167,7 +166,6 @@ Files
 	│   ├── sites-available/
 	│   │   ├── 000-default
 	│   │   ├── dev.wsbf.net
-	│   │   ├── m.wsbf.net
 	│   │   ├── new.wsbf.net
 	│   │   ├── wsbf.clemson.edu
 	│   │   └── wsbf.net
@@ -184,16 +182,21 @@ Files
 
 	/var/www/
 	├── dev/
-	│   └── ... (same structure as wsbf/)
-	├── mobile/
 	└── wsbf/
-		├── api/
-		├── blog/
-		└── wizbif/
 
 `130.127.17.5` (Automatrix)
 
-__TODO__
+Software
+
+- ZAutomate
+
+Files
+
+	/hompe/compe/
+	└── zautomate
+
+	/hompe/dj/Desktop/
+	└── (shortcut to start ZAutomate)
 
 `130.127.17.6` (Transcode)
 
@@ -213,7 +216,17 @@ Files
 
 `130.127.17.39` (John)
 
-__TODO__
+Software
+
+- Streamripper
+
+Files
+
+	/home/compe/
+	└── fetch_external_metadata.pl
+
+	/usr/local/bin/
+	└── streamripper_start_on_boot.sh
 
 `130.127.17.42` (Ringo)
 
@@ -235,31 +248,30 @@ __TODO__
 
 The senior staff use the "fishbowl" at the start of each semester to prioritize DJs by quality, so that the best DJs receive the best schedule options for the semester.
 
-1. [Archive](http://new.wsbf.net/wizbif/fishbowl/fishbowl_clear_table.php) the fishbowl. The `fishbowl` table is copied to `fishbowl_log` and then cleared.
-2. Open the fishbowl config file at `/var/www/wizbif/fishbowl/fishbowl_config.php` and set the semester (`spring` or `fall`), the start date for counting CD reviews, and the deadline for DJs to submit their fishbowl application. Make sure that the deadline is before the senior staff meeting on the night of show picks.
-3. Add a link to the [fishbowl app](http://new.wsbf.net/wizbif/fishbowl/fishbowl_app.php) to the main page.
-4. Notify all active DJs that they are required to fill out their applications by the deadline.
-5. After the deadline, let the senior staff [rate](http://new.wsbf.net/wizbif/fishbowl/fishbowl_review.php) each of the applications.
-6. [Print](http://new.wsbf.net/wizbif/fishbowl/fishbowl_print.php) the results of the fishbowl. The first bowl contains the highest-rated DJs, and so on. The order within each fishbowl is random.
+1. Archive the fishbowl. The `fishbowl` table is copied to `fishbowl_log` and then cleared.
+2. Open the fishbowl config file at `/var/www/wsbf/wizbif/api/fishbowl/config.php` and set the semester (`SPRING` or `FALL`), the start date for counting CD reviews, and the deadline for DJs to submit their fishbowl application. Make sure that the deadline is before the senior staff meeting on the night of show picks.
+3. Notify all active DJs that they are required to fill out their applications by the deadline.
+4. After the deadline, let the senior staff rate each of the applications.
+5. Print the results of the fishbowl. The first bowl contains the highest-rated DJs, and so on. The order within each fishbowl is random.
 
 ### Adding Carts to the Cart Machine
 
 DJs use the "cart machine" to play station IDs, public service announcements, underwritings, and other non-musical audio clips.
 
 1. Make sure that the audio file is an MP3. Use an application like `ffmpeg` or a website like [media.io](http://media.io) to convert files.
-2. Move the audio file into `/var/www/wizbif/ZAutoLib/carts` on George.
-3. Log in to [phpmyadmin](http://wsbf.net/phpmyadmin), select the `def_cart_type` table, and find the `cart_typeID` of the audio file.
+2. Move the audio file into `/var/www/wizbif/ZAutoLib/carts/` on George.
+3. Log in to [phpmyadmin](https://wsbf.net/phpmyadmin/), select the `def_cart_type` table, and find the `cart_typeID` of the audio file.
 4. Select the `libcart` table and insert a new record. Select the start and end dates to air the PSA, the `cart_typeID`, the title, and the filename. Leave any other fields blank. Use the existing records to guide your choices.
-5. Reload the Cart Machine in Studio A and confirm that the new cart appears. Note: if the cart is a PSA or underwriting, Automation will play it roughly once every two hours. There is currently no way to set the frequency with which Automation plays carts.
+5. Reload the Cart Machine in Studio A and confirm that the new cart appears.
 6. If the new cart is an underwriting, leave a note on the main desk in Studio A to tell DJs how often to play the underwriting.
 
 ### Resetting Account Passwords
 
 The current website doesn't have an automated way for users to reset their own passwords if they forget, so the computer engineer must do a few things manually.
 
-1. When someone requests a password reset, verify that he or she is a DJ at the station. Ask for his or her name and email, and search the `users` table for the person's username.
-2. Select the `password_reset` table and insert a new record with the username, a random string as the `transaction_id`, and an `expiration_date` (usually within 24 hours of the request) for the user to reset his or her password.
-3. Email the user with a link to the password reset page. This link should have the form `http://new.wsbf.net/wizbif/password/password_reset.php?transaction_id=[transaction id]`. Warn the user that the link will eventually expire.
+1. When someone requests a password reset, they should email after they submit the request.
+2. Go to the `password_reset` table and find the user's transaction.
+3. Email the user with a link to the password reset page. This link should have the form `https://wsbf.net/login/#/reset-password/[transaction id]`. Warn the user that the link will eventually expire.
 
 ## Troubleshooting
 

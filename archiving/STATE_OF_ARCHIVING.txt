@@ -1,0 +1,420 @@
+------------------------------------------------------------------       
+I. HOW WE RIP ARCHIVES
+------------------------------------------------------------------       
+
+Archiving is done locally in WSBF.  The computer known as John, located at 
+130.127.17.39, accomplishes this through a piece of software known as Streamripper. 
+ When active, Streamripper 'listens' to an audio stream (either local or via the web) 
+ and writes the stream to an MP3 file on Disk.  It uses. by default, a naming scheme like 
+ AAA-ZZZ.  By default, it records uninterrupted until it is told to stop.  When 
+ it is told stop, it closes the file it is writing to, does some 'clean up' an quits.
+
+Streamripper can be parameterized to have a different naming and recording behavior.  
+This is done by providing a 'hook' into some data about what it is recording, 
+typically a "title" and a "artist" for a track.  This is accomplished by giving 
+streamripper access to another program which provides this 'metadata' about what 
+Streamripper is recording.
+
+We accomplish this at WSBF through the use of two scripts.  The first script is 
+called streamripper.php.  It is located at http://new.wsbf.net/wizbif/streamripper.php .  
+If you visit it, it will show you either
+
+   title="#######" artist="" 
+   OR
+   artist="Yates Disgrace_" artist="#######_Shark Tank Block Party"
+
+depending on whether or not I've fiddled with it lately.  This script basically 
+says what show is currently happening on WSBF, and who the DJ is.
+
+The other program is a Perl script called "fetch_external_metadata.pl" and lives
+ on the computer known as John.  This program is run with a single input parameter, 
+ notably a source which it pulls metadata from.  It checks the metadata every so 
+ many seconds (5?).  Here's what the sample output from running this program looks 
+ like:
+
+      TITLE=20605
+      ARTIST=
+      .
+      TITLE=20605
+      ARTIST=
+      .
+      
+When paired with Streamripper, it allows us to more dynamically take archives 
+based on artist and title.  More simply put, Streamripper runs the 
+fetch_external_metadata.pl script, and whenever it detects that either the title 
+OR the artist has changed, it stops writing to the file it was writing to, and 
+starts writing to a new file.  In short, you could use this to rip songs off of 
+internet radio or something similar.  We use it to write a single show to a single
+ mp3 file.
+
+------------------------------------------------------------------       
+II. HOW WE STORE ARCHIVES
+------------------------------------------------------------------       
+We store archives in a RAID-5 Array called BC_China that is locally attached to 
+John.  BC_China contains four 1TB Caviar Black hard drives and has a total 
+storage of 2.8TB.  Like all RAID-5 Arrays, has single-fault safety.  If a single 
+hard-drive dies, no data loss occurs and we can safely keep operating.  If two 
+hard drives die, we start to lose lots of data really quickly.
+
+(NB: It is named after the Chinese tech support worker that Zach Musgrave spent 
+many hours talking to in order to get it to function properly.) 
+
+Currently, we have 3 distinct set of archives from 3 distinct eras at WSBF.  They 
+are known as the archive, archives (with an s!) and archpk.  I'll talk about each of them 
+separately, in chronological order.  In order to have less confusion, we'll give 
+each of them nicknames:
+
+New = archives
+Old = archpk
+OLDEST = archive
+
+---------------------------------------------------------------------------
+III. OLDEST
+---------------------------------------------------------------------------
+
+OLDEST is the oldest set of archives we have at WSBF.  The oldest archive in it 
+has a creation date of February 2, 2008 (2/2/2008).  These are largely archives 
+from the era of Ross Squire, the computer engineer before Zach Musgrave.  The 
+most recent archive is May 30th, 2010 (5/30/2010).  Here's a breakdown of what 
+OLDEST looks like size-wise:
+
+5.3M    ./%/incomplete
+5.3M    ./%
+56K     ./forDeletion
+3.7G    ./incomplete
+0       ./rename
+214G    .
+214G    total
+
+As you can see, there is a small amount of 'incomplete' archives in the incomplete 
+folder.  We're not 100% sure how incomplete archives get created.  My best guess would be 
+that we lost power while ripping an archive.
+
+Most of the archives in OLDEST has the following naming format:
+
+<DJ NAME0, DJ NAME1> - SHOW NAME (OPTIONAL) - Show Archive LONGFORM_DATE.
+
+This format results in archives that look like the following:
+
+Casey, Remy - Show Archive December 10, 2009.mp3
+William Qualkinbush - Show Archive September 25, 2009.mp3
+Joe Dubrowski - Tuesday Night Jam - Show Archive December 01, 2009.mp3
+
+A few observations
+-Some DJs are named only by their first name.  Casey, Remy refers to Casey 
+McCaullaugh and Remy refers to Remembre Watts.
+-Sometimes the full DJ name is used, as in Joe Dubrowski and William Qualkinbush.
+-Sometimes the Show name is included.  Sometimes it is not.  I believe this was 
+for shows that did not have show names.
+
+They are not all in this format.  There are many anomalies:
+
+1) There are a ton of shows that look like this:
+      ld
+2) There are some shows without a DJ name, or perhaps a DJ Pseudonym
+   Rotating Specialty Show - Show Archive October 12, 2008.mp3
+   Rush, Allan Babcock - Show Archive September 17, 2009.mp3
+   Rush - Show Archive January 07, 2010.mp3
+   Joe  - Show Archive January 25, 2009.mp3
+   
+3) There are a couple shows that have reversed order of names:
+   Roots Rock Radio - Taylor Shoulders - Show Archive November 04, 2009.mp3
+   
+4) And then there are other weird anomalies
+   -David Ballou--9540-.mp3
+   , David Ballou - 9540.mp3
+   , David Ballou - .mp3
+   
+5) As well as shows that we simply have no information on.  These shows amount 
+to a small amount of space, ~500MB.
+    -  (8).mp3
+    -  (90).mp3
+    -  (91).mp3
+    -  (92).mp3
+    -  (93).mp3
+    -  (94).mp3
+    -  (95).mp3
+    -  (96).mp3
+    -  (97).mp3
+    -  (98).mp3
+    -  (99).mp3
+    -  (9).mp3
+
+In total, I see roughly 4GB of shows that we can remove.
+
+There are also at least 25 corrupted archives that follow the naming convention 
+in 5).  They cannot be deleted, moved, touched, viewed, read, whatever.
+---------------------------------------------------------------------------
+IV. OLD
+---------------------------------------------------------------------------
+OLD is the folder known as archpk.  It is our largest set of archives.  It contains
+archives between February 1, 2010 (2/1/2010) and July 10th, 2013 (7/10/2013).  
+These are archives largely from the era of Zach Musgrave and David Cohen.
+
+219G    ./incomplete
+2.1T    .
+2.1T    total
+
+This is the lion share of our archives.  In totaly, it contains 219G of incomplete
+archives, and 1.9TB of completed, good archives.
+
+The archives only have 3 naming formats:
+
+1) ####.mp3
+
+This naming format refers to the ShowID in the database for the show.  Every show 
+that happens on WSBF has a showID, and each new show gets the next sequential showId.
+
+2) A##############.mp3
+
+David Cohen informed me that the A stands for Automation.
+
+There are more than likely other shows that use the first naming format that are 
+also automation.
+
+3) ####.mp3 (#)
+
+These files are instances of a single show with multiple archives.  This could happen 
+a number of ways, but the most likely way is that archiving crashed and recovered
+ mid show, producing two files.  Another possibility is that archiving was manually
+ stopped and started during a single show.
+ 
+Within the Incomplete folder, we see a different story.  Incomplete is 219GB of 
+files.  The files have the following naming format
+
+1) Show Name, with <DJ0, DJ1, etc> - ShowID.mp3
+   WSBF Radio Theater, with Abbey Normal - 17994 (10).mp3
+   WSBF Radio Theater, with Abbey Normal - 17994 (11).mp3
+   In the Mix, with Dominic Jones, Derek Riker - 17995 (15).mp3
+   In the Mix, with Dominic Jones, Derek Riker - 17995 (16).mp3
+   
+2) Dj Name - ShowID.mp3
+   Burrow - 13860 (7).mp3
+   Burrow - 13860 (8).mp3
+   Burrow - 13860 (9).mp3
+   
+3) Bad shows
+    -  (47).mp3
+    -  (48).mp3
+    -  (49).mp3
+    -  (4).mp3
+
+4) There are also named automation archives that follows a sane naming format:
+   The Best of WSBF, with Otto Mation - 18156.mp3
+   
+The majority of the files are 'duplicate' style files where we have multiple
+archives for the same show.  In some cases, it is as many as 100+ files for the 
+same show.  As I said before, the Incomplete archive is 219GB, here's some totals
+for different types of files therein:
+
+1) Bad Names: 54GB
+2) Otto Mation: 130G
+
+---------------------------------------------------------------------------
+V. NEW
+---------------------------------------------------------------------------
+
+The NEW set of archives are archives that happened under my watch.  They contain 
+archives from Octobr 10th, 2013 (10/8/2013) and April 4th, 2014(4/28/2014).  It 
+is a fairly small set of archives, coming in at ~200GB total.
+
+5.8G    ./incomplete
+206G    .
+206G    total
+
+This archive has one naming style:
+
+1) <DJ0 DJ1 ...>_ - ShowID_Optional Show Name With Spaces.mp3
+   Tyler Woody_ - 20130_.mp3
+   Tyler Woody_Garrett Wilson_ - 19383_.mp3
+   Wynne Morris_ - 18717_The Indie Gospel.mp3
+   Wynne Morris_ - 18788_The Indie Gospel.mp3
+
+In some cases, the show has a name, but due to a bug of some sort, there is no 
+name on the file.  For example
+   Otto Mation_ - 18863_.mp3
+
+There are 20 very anomalous archives totalling 4.4MB of storage.  Insignificant.
+
+Of the 200GB of archives in this folder, half of it (95GB) are Automation archives.
+
+The incomlete folder is 5.8GB.  The vast majority of that folder is Automation archives.
+
+----------------------------------------------------------------------------
+VI. WHAT ELSE IS WRONG?
+----------------------------------------------------------------------------
+There are still a few more problems with BC_China and archiving.
+
+1) BC_CHINA IS DYING!
+
+That's not quite true.  Hardware wise, BC_China is fine.  We just replaced the 
+dead hard drive in it, and no data loss occurred as a result.  However, the software
+on BC_China is dying.  Every hard drive is formatted to a particular File System,
+which is how the operating system interacts with the hard drive.  Different operating
+systems support different file systems "natively".  Often, you can install a driver
+to allow an operating system to interface with a hard drive that it does not natively support.
+
+BC_China is formatted to the NTFS (New Technology File System) format.  NTFS is 
+a Microsoft format for use in Windows operating system.  Originally, BC_China was
+attached to the old Windows 2003 Server machine.  This made sense at the time.  
+However, in our move to a more Linux-centric back-end, we never changed it over 
+to a Linux compatible FileSystem.  However, I did install a driver that allows us 
+to interface with NTFS format hard drives.  It is called NTFS-3G and is notoriously bad
+at what it does.  It consumes significant amounts of processing power, and has a 
+frequency to screw up writes to disk.  This has happened, and our file system is 
+slowly becoming corrupt.
+
+As a result, we cannot write files to BC_China.  We can temporarily record archives
+to our other RAID-5 Array, ZAutoLib, which stores our digital music library, but 
+it suffers from the same problem, being an NTFS formatted drive.
+
+2) BC_CHINA IS RUNNING OUT OF SPACE!
+We have enough space on BC_China for another year, roughly, of archives.  After 
+that, it will be full.
+
+/dev/sdc2       2.8T  2.5T  305G  90% /media/BC_China
+
+3) WE HAVE NO WAY OF SERVING UP ARCHIVES!
+
+Because we have ~12 different naming formats for archives, it is nearly impossible
+to algorithmically (read, like a recipe) determine which file correspondes to which 
+show, for all shows at WSBF.
+
+4) ARCHIVING CRASHES, ISN'T REDUNDANT, IS NOT TRANSPARENT
+
+Currently, archiving runs if someone sets it to run.  But if it crashes, no one 
+knows unless the check John and see that it's running.  If it's not running, no 
+one knows unless they check John to see if it's running.
+
+----------------------------------------------------------------------------
+VII. HOW WILL WE FIX IT YATES?
+----------------------------------------------------------------------------
+This will be a multi-step process.  I would like to finish it this week if possible.
+
+1) Dealing with the space issue.
+
+I -NEED- some clarification on what level of archiving we would like to do.
+1.1) How long should we keep archives?
+1.2) Should we keep archives of automation?
+1.3) What should we do with incomplete archives?
+1.4) What should we do with archives that lack identifying information?
+
+If we can delete items that qualify 1.2, we will free up roughly 400GB of space.
+If we delete items that qualify 1.3, we can get another 300GB of space.
+If we delete items that qualify 1.4, I lost count, but potentially another 50GB 
+of space.
+
+This would provide us a total of ~1TB of space, which would last the station 
+another 3ish years.
+
+2) Dealing with the file system issue.
+
+If we can delete roughly 500GB of archives, I can move everything from BC_China 
+to ZAutoLib an reformat BC_China to a file system format that is more reliable
+and compatible with Linux (notably EXT4).  This is dangerous, as we do not have 
+a backup of either ZAutoLib or BC_China, but I have no reason to believe that 
+something will go wrong.
+
+If we can acquire roughly 2.1TB of space, I can migrate everything off of BC_China
+and reformat BC_China toa  file system format this is more reliable an compatible 
+with Linux.  Again, dangerous, but no reason to believe that something will go wrong.
+(Besides Murphy's Law).
+
+The third alternative is that we can acquire corporate level cloud storage.  This
+will not be a good solution for serving up archives, streaming music to automation,
+but it is a good solution to our back up problem.  I was recently made aware of
+a enterprise solution called Zendesk that offers unlimited cloud storage for 
+~$800 a year.
+
+3) Dealing with Naming Issues
+
+This is a particularly tricky problem.  I would like to move all archives back 
+to the naming scheme that was developed by David Cohen and contained in the 
+archpk folder (aliased OLD).  That is simply showId.mp3. Those are the bulk of 
+our archives, so there is less work to do. This makes files very easy to work 
+with, the naming very elegant, and it links directly to our database.
+
+Moving the archives that were taken under my watch (archives, NEW) will be easy,
+because each archive has its showID in its name.
+
+Moving the archives that were taken under Ross Squires watch (archive, OLDEST) will 
+be hard.  We will have to cross-match the date and DJ with our data base logs of 
+shows.  However, this is the least time critical piece.
+
+4) Dealing with archiving and Reliability
+
+I would like someone to develop a better solution for archiving.  This should 
+be a very simple script that does the following:
+
+   START:
+      IS ARCHIVING RUNNING?
+         IF YES, DO NOTHING
+         IF NO, START RUNNING ARCHIVES
+         WAIT 1 MINUTE
+         GO TO START
+
+We currently have a start of something like this, but, as always, it's very WSBF.
+
+On John (130.127.17.39), there are two files, in two locations that deal with this.
+
+/usr/bin/streamripper_start_on_boot
+/usr/local/bin/streamripper_start_on_boot.sh
+
+They do something similar to the top script.  They do not work correctly, I do 
+not know what triggers them to fail, I do not know why we have two.  They 
+could be salvaged.  They should probably be paired with Cron / Crontab for
+ensuring that they never stop running.
+
+I would also like someone to develop a watch dog script that determines whether 
+or not this script is running.  It should have behavior that does the following:
+   START:
+      IS ARCHIVING RUNNING?
+      IF YES, DO NOTHING
+      IF NO, EMAIL COMPUTER ENGINEER, CHIEF ENGINEER, GENERAL MANAGER
+      WAIT 1 MINUTE
+      GO TO START  
+      
+
+
+5) Dealing with Automation Archives
+
+Regardless of how we decide to handle archives of Automation, I would like to 
+alter our meta-data script to indicate that a particular archive file was automated
+radio play.  That way, in the future, it will be easy to identify logs that are 
+automation.  Something like what was done under Zach and David's watch, where automation 
+files are A#######.mp3.
+
+6) Serving up archives
+
+We need a method to serve up archives.  It should be very, very simple at first.
+Here's what I'm envisioning
+
+Drop Down Menu for DJ name.  Select DJ, hit submit, it provides you a list of 
+all shows that DJ has done.  If an archive exists for a particular show, it 
+provides a hyperlink to that archive.  If it does not, no hyperlink is provided.
+
+Drop Down Menu for Show Name.  Select a show, hit submit, the webpage provides 
+you a list of all shows that correspond to that show name.  If an archive exists 
+for a particular show, it provides a hyperlink to that archive.  If it does not, 
+no hyperlink is provided.
+
+Calendar Widget for Date.  Select a date, hit submit, the webpage provides 
+you a list of all shows that occured on that date.  If an archive exists 
+for a particular show, it provides a hyperlink to that archive.  If it does not, 
+no hyperlink is provided.
+
+I believe this page would be easy enough for either Ben or Max to do.  It would
+be stored on new.wsbf.net, our internal intranet, until we get some clear answer
+on whether we can disseminate archives to the public.
+
+----------------------------------------------------------------------------
+VIII. Summary
+----------------------------------------------------------------------------
+
+Since I am not a senior staff member, nor am I Jackie, I need a thumbs up go ahead
+to do stuff before I do stuff.  And I need answers to the questions about what to do 
+with archives above.
+
+With that information, and ya'lls blessing, I can start on 1) and 2), and start 
+thinking about 3) and 5).  David Cohen said he would look at 4 since his vacation 
+turned into a bit of a bust. Someone else should handle 5).
