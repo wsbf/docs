@@ -17,6 +17,7 @@ The role of the Computer Engineer is to maintain the station's computing resourc
 
 Here is a reference of programming languages that are used throughout WSBF:
 
+- [Bash](https://www.gnu.org/software/bash/): scripting language for the Unix shell
 - [MySQL](https://dev.mysql.com): database query language
 - [PHP](http://php.net/manual/en): scripting language for server-side scripts
 - [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)/[CSS](https://developer.mozilla.org/en-US/docs/Web/CSS): markup and styling languages for web pages
@@ -123,15 +124,7 @@ Currently, the two computers in Studio A share a keyboard and mouse (probably by
 
 `130.127.17.42` (Ringo)
 
-Ringo is the database replicator... so he replicates the database. Probably need to find more about that.
-
-`130.127.17.?` (Production Director)
-
-__TODO__
-
-`130.127.17.121` (Music Director)
-
-__TODO__
+Ringo is the replication slave for the MySQL database on George. Ringo runs a copy of the database and updates it whenever the master database updates. Ringo also creates periodic backups of the database with `automysqlbackup`.
 
 __TODO__: incorporate notes from state of archiving
 
@@ -141,23 +134,16 @@ __TODO__: Of course, there is more hardware involved in transmitting the audio s
 
 Within each computer there is a set of critical files and software that must be maintained. In general, these computers should be able to run the following software as long as they are using a modern version of Ubuntu.
 
-* Any remaining Windows machines that perform back-end tasks (such as Paul) should be eventually migrated to Linux.
-
-`130.127.17.2` (Paul)
-
-__TODO__
-
 `130.127.17.4` (George)
 
 Software
 
-- Apache 2 web server
-- MySQL database
-- modules for PHP with Apache and MySQL
-- phpmyadmin
-- Let's Encrypt
-- Icecast
-- automysqlbackup
+	apache2
+	mysql
+	php5
+	phpmyadmin
+	letsencrypt
+	icecast2
 
 Files
 
@@ -188,7 +174,7 @@ Files
 
 Software
 
-- ZAutomate
+	ZAutomate
 
 Files
 
@@ -202,23 +188,22 @@ Files
 
 Software
 
-- Darkice
+	darkice
 
 Files
 
 	/home/compe/
 	├── darkice.cfg
-	└── WSBF_DARKICE_README.txt
+	└── README.txt
 
 	/usr/local/bin/
-	├── alsa_force-reload.sh
 	└── darkice_start_on_boot.sh
 
 `130.127.17.39` (John)
 
 Software
 
-- Streamripper
+	streamripper
 
 Files
 
@@ -227,7 +212,16 @@ Files
 
 `130.127.17.42` (Ringo)
 
-__TODO__
+Software
+
+	mysql
+	automysqlbackup
+
+Files
+
+	/etc/defaults
+	└── automysqlbackup
+
 
 ### Let's Encrypt: TLS Encryption
 
@@ -293,14 +287,3 @@ In case of a power outages, follow these steps to the best of your ability:
 8. Restart Automatrix. Automatrix will mount ZAutoLib through John. When Automation, DJ Studio, and Cart Machine initialize, they should be able to load tracks if ZAutoLib is mounted.
 9. If the station has been down for more than 4 hours, play the Sign On cart. In DJ Studio, search "psa", it should be first on the list.
 10. Start Automation.
-
-### Streaming/Broadcasting Issues
-
-At the time of writing, doing the following to the digital detangler usually restores streaming and broadcasting:
-
-1. Go to Studio A or call the DJ on Air
-2. Restart the detangler
-3. Hit load once
-4. Hit route twice
-5. If that doesn't work, reboot Transcode
-6. If that doesn't work, call Matt Rana
