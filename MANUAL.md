@@ -92,41 +92,37 @@ All other ports on all WSBF computers should be kept in the default firewall pol
 
 All of WSBF's hardware resources are located in the WSBF suite. They are listed below by IP address:
 
-`130.127.17.2` (Paul)
+### 130.127.17.2 (Paul)
 
 Paul is a Windows server who runs an RDS program for the radio stream.
 
 * Paul also currently has the old site for `wsbf.clemson.edu` and some other old but possibly important files that need to be sorted through.
 
-`130.127.17.4` (George)
+### 130.127.17.4 (George)
 
-George is the web server. George runs the Apache web server, the MySQL database, and Icecast, which serves the audio stream from Transcode. George uses Samba to access ZAutoLib through John.
+George is the web server. George runs the Apache web server, the MySQL database, and Icecast, which serves the audio stream from Transcode. George mounts ZAutoLib through John, and also hosts RIPPED_MUSIC with Samba, so that albums and carts can be transferred remotely.
 
-* George also runs automysqlbackup?
-
-`130.127.17.5` (Automatrix)
+### 130.127.17.5 (Automatrix)
 
 Automatrix is the Linux machine in Studio A. It runs ZAutomate, which includes Automation, the DJ Studio, and the Cart Machine. Automatrix mounts ZAutoLib through John.
 
-`130.127.17.6` (Transcode)
+### 130.127.17.6 (Transcode)
 
 Transcode is a Linux machine currently located in Studio B. It runs Darkice, which digitizes and streams the audio signal from Studio A to the web server.
 
-`130.127.17.39` (John)
+### 130.127.17.39 (John)
 
 John is the archiver. John records everything that is on air and writes each show to a file. John also mounts ZAutoLib (the music library).
 
-`130.127.17.40`
+### 130.127.17.40
 
 This machine doesn't have a name, but it is the Windows machine in Studio A. It runs the online logbook for DJs and the webcam.
 
 Currently, the two computers in Studio A share a keyboard and mouse (probably by some kind of USB splitter magic), and they each run a program called Synergy that tracks the mouse crossing screens. Automatrix could assume the functions of this Windows machine, and remove the need for Synergy, but there is a risk that DJs browsing the Internet on Automatrix might play audio from a web page that would be inadvertently put on air.
 
-`130.127.17.42` (Ringo)
+### 130.127.17.42 (Ringo)
 
 Ringo is the replication slave for the MySQL database on George. Ringo runs a copy of the database and updates it whenever the master database updates. Ringo also creates periodic backups of the database with `automysqlbackup`.
-
-__TODO__: incorporate notes from state of archiving
 
 __TODO__: Of course, there is more hardware involved in transmitting the audio stream from Studio A to the studio hub in Studio B and the transmitter shack on Kite Hill, but they are generally managed by the Chief Engineer. At some point the backup automation computer in the shack should be documented here.
 
@@ -134,16 +130,17 @@ __TODO__: Of course, there is more hardware involved in transmitting the audio s
 
 Within each computer there is a set of critical files and software that must be maintained. In general, these computers should be able to run the following software as long as they are using a modern version of Ubuntu.
 
-`130.127.17.4` (George)
+### 130.127.17.4 (George)
 
 Software
 
 	apache2
+	icecast2
+	letsencrypt
 	mysql
 	php5
 	phpmyadmin
-	letsencrypt
-	icecast2
+	samba
 
 Files
 
@@ -158,19 +155,24 @@ Files
 	│   ├── sites-enabled/
 	│   │   └── ... (symlinks to files in sites-available/)
 	│   └── apache2.conf
-	└── php5/apache2/
-		└── php.ini
+	├── php5/apache2/
+	│   └── php.ini
+	└── samba/
+	    └── smb.conf
 
 	/home/compe/
+	├── certbot-auto
 	└── RIPPED_MUSIC/
 		├── albums/
 		└── carts/
 
 	/var/www/
-	├── dev/
-	└── wsbf/
+	├── blog/
+	├── camera/
+	├── wsbf/
+	└── ZAutoLib/
 
-`130.127.17.5` (Automatrix)
+### 130.127.17.5 (Automatrix)
 
 Software
 
@@ -184,7 +186,7 @@ Files
 	/hompe/dj/Desktop/
 	└── (shortcut to start ZAutomate)
 
-`130.127.17.6` (Transcode)
+### 130.127.17.6 (Transcode)
 
 Software
 
@@ -199,39 +201,32 @@ Files
 	/usr/local/bin/
 	└── darkice_start_on_boot.sh
 
-`130.127.17.39` (John)
+### 130.127.17.39 (John)
 
 Software
 
+	samba
 	streamripper
 
 Files
 
+	/etc/samba/
+	└── smb.conf
+
 	/usr/local/bin/
 	└── streamripper_start_on_boot.sh
 
-`130.127.17.42` (Ringo)
+### 130.127.17.42 (Ringo)
 
 Software
 
-	mysql
 	automysqlbackup
+	mysql
 
 Files
 
 	/etc/defaults
 	└── automysqlbackup
-
-
-### Let's Encrypt: TLS Encryption
-
-- Clone the git repository to `/opt/letsencrypt`
-- Request certificates for each domain
-```
-./letsencrypt-auto certonly --webroot -w /var/www/wsbf -d wsbf.net
-```
-
-- Run `./letsencrypt-auto` to install the certificates to each Apache virtual host
 
 ## Miscellaneous Tasks
 
