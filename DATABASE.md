@@ -1,19 +1,7 @@
 The Database Reference
 ======================
 
-This document defines the schema of the MySQL database and describes the purpose of each table. Table and column names are provided, and keys are marked as such. For more detailed information, such as column data types, go to [wsbf.net/phpmyadmin](http://wsbf.net/phpmyadmin).
-
-TODO: convert collation of databases, tables, and columns to `utf8_general_ci`.
-
-Currently unused tables:
-```
-history
-intern_list
-libplaylist
-likes
-mailing_list
-office_hours
-```
+This document defines the schema of the MySQL database and describes the purpose of each table. Table and column names are provided, and keys are marked as such. For more detailed information, such as column data types, go to http://wsbf.net/phpmyadmin/.
 
 ## Tables
 
@@ -43,6 +31,15 @@ def_days
 ```
 
 Contains the index and name of each day of the week.
+
+```
+def_fishbowl_log_types
+
+	typeID
+	type
+```
+
+Contains the index and name of each fishbowl log type (Promo Table, Production, etc.).
 
 ```
 def_general_genres
@@ -91,7 +88,7 @@ def_show_times
 
 Contains the index and name of each show time in the schedule.
 
-* This table could be used to normalize columns in other tables, such as `schedule.start_time` and `schedule.end_time`.
+__TODO__: This table could be used to normalize columns in other tables, such as `schedule.start_time` and `schedule.end_time`.
 
 ```
 def_show_types
@@ -121,15 +118,31 @@ def_teams
 Contains the index and name of each team (Red, Blue, etc.)
 
 ```
+history
+
+	historyID
+	contributor_name
+	contributor_email
+	contributor_website
+	contributor_story
+	current_location
+	positions_held
+	years_active
+	mailing_address
+```
+
+Contains records of alumni stories, apparently added by alumni themselves.
+
+```
 fishbowl
 
-	id
+	fishbowlID
 	timestamp
 	username
 	semesters
-	missedShows
-	liveShows
-	springFest
+	missed_shows
+	live_shows
+	springfest
 	specialty
 	dead_hours
 	other
@@ -139,13 +152,19 @@ fishbowl
 
 Contains a record of every fishbowl application for the current semester.
 
-* Some columns could be computed from other tables:
+_Note_: the `live_shows`, `springfest`, and `other` columns are kept for reference only; the `fishbowl_log` is used instead.
 
-* `semesters` from the `schedule` and `schedule_hosts` tables
-* `missedShows` from the `show` and `show_host` tables
-* `dead_hours` from the `schedule` and `schedule_hosts` tables
+```
+fishbowl_log
 
-* Some column names use camelCase, which is inconsistent with the rest of the database.
+	fishbowl_logID
+	username (-> users)
+	date
+	log_type (-> def_fishbowl_log_types)
+	description
+```
+
+Contains records of actions by users that earn fishbowl points.
 
 ```
 libaction
@@ -214,6 +233,17 @@ liblabel
 Contains records for every music label in the music library.
 
 ```
+libplaylist
+
+	username
+	playlist_name
+	playlistID
+	showID
+```
+
+Currently unused, but it could be used by users to prepare playlists for their shows.
+
+```
 libreview
 
 	albumID
@@ -225,7 +255,7 @@ libreview
 
 Contains records for album reviews.
 
-* The `reviewer` column may be redundant since `users.preferred_name` could be used instead.
+_Note_: the `reviewer` column is kept for reference only; reviewer names are fetched from the `users` table.
 
 ```
 libtrack
@@ -255,13 +285,11 @@ logbook
 	lb_label
 	time_played
 	played
-	deleted
 ```
 
-Contains every track that is logged from the online logbook.
+Contains every track that is logged during shows.
 
-* Currently there are no records with `deleted=1`. Was a delete option intended for the online logbook? Who knows.
-* The logbook could be designed such that `played` and `deleted` are not needed. Just have the logbook REPLACE when a track is played.
+_Note_: the `played` column is kept for reference only; with the current logbook, tracks are not logged until they are played.
 
 ```
 password_reset
@@ -276,7 +304,7 @@ Contains records of outstanding password reset requests by users who forgot thei
 ```
 now_playing
 
-	logbookID
+	logbookID (-> logbook)
 	lb_track_name
 	lb_artist_name
 ```
