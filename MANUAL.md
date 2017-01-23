@@ -75,10 +75,6 @@ In addition, other staff positions may be set when they are filled:
 	rpm@wsbf.net
 	world@wsbf.net
 
-In addition, every staff member should be able to send mail from their wsbf email address. This is done in Gmail by going to `Settings -> Accounts and Import -> Send mail as -> Add another email address you own`.
-
-TODO: include information on smtp.gmail.com hack.
-
 ## Firewall
 
 Since WSBF's computing infrastructure exists on Clemson University's `130.127` network, WSBF computers are subject to the campus firewall, which allows outgoing traffic but blocks unrequested incoming traffic. CCIT maintains a list of exceptions for WSBF computers. The following ports should be allowed to receive incoming traffic:

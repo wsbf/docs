@@ -148,27 +148,6 @@ Contains a record of every fishbowl application for the current semester.
 * Some column names use camelCase, which is inconsistent with the rest of the database.
 
 ```
-fishbowl_log
-
-	id
-	timestamp
-	username
-	semesters
-	missedShows
-	liveShows
-	springFest
-	specialty
-	dead_hours
-	other
-	average
-	weight
-```
-
-Contains a record of every fishbowl application from previous semesters (exact same structure as `fishbowl`).
-
-* `fishbowl` and `fishbowl_log` could be merged into one table with a `current` column to distinguish records for the current semester, as in the `schedule` table.
-
-```
 libaction
 
 	actionID
@@ -217,7 +196,6 @@ libcart
 	cartID
 	start_date
 	end_date
-	play_mask
 	issuer
 	title
 	cart_typeID (-> def_cart_type)
@@ -295,8 +273,6 @@ password_reset
 
 Contains records of outstanding password reset requests by users who forgot their passwords.
 
-* Currently there is a web interface to reset a user's password, but the computer engineer must email the URL to the user.
-
 ```
 now_playing
 
@@ -305,9 +281,7 @@ now_playing
 	lb_artist_name
 ```
 
-Contains the logbook index of the currently playing track.
-
-* The other two columns may be redundant if the record is joined with columns in the logbook. Since this table seems to only ever have one row, it makes little difference.
+Contains an easily accessible copy of the currently playing track.
 
 ```
 schedule
@@ -422,6 +396,6 @@ users
 
 Contains a record for every WSBF user.
 
-* Profile pictures are stored in `/var/www/wizbif/profiles`
+* Profile pictures are currently located at `/wizbif/images/users/`, however it might be easier to store the image name instead of a flag.
 
 * Currently, `username` is the primary key, which means that other tables must use usernames as foreign keys and users cannot change their username. In the future it may be a good idea to add a `userID` column and apply it throughout the database.
