@@ -321,13 +321,11 @@ schedule
 	end_time
 	show_typeID (-> def_show_types)
 	description
-	genre
+	general_genreID (-> def_general_genres)
 	active
 ```
 
 Contains the schedule of shows, including past shows.
-
-* Genre names are stored instead of genre IDs, so there is an opportunity here for normalization. Also, they are actually general genres.
 
 ```
 schedule_hosts
