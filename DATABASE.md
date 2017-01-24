@@ -381,26 +381,20 @@ sub_fill
 	username (-> users)
 ```
 
-Contains a record for every show sub request that was filled.
+Contains a record of every show sub request that was filled.
 
 ```
 sub_request
 
 	sub_requestID
 	username (-> users)
-	* dayID (-> def_days)
-	* start_time
-	* end_time
+	scheduleID (-> schedule)
 	date
 	posted_time
 	reason
-	* show_name
-	* show_typeID (-> def_show_types)
 ```
 
-Contains a record of every show sub request ever submitted.
-
-* The columns marked with an asterisk could be replaced with scheduleID.
+Contains a record of every show sub request.
 
 ```
 users
