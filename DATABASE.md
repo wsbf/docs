@@ -118,22 +118,6 @@ def_teams
 Contains the index and name of each team (Red, Blue, etc.)
 
 ```
-history
-
-	historyID
-	contributor_name
-	contributor_email
-	contributor_website
-	contributor_story
-	current_location
-	positions_held
-	years_active
-	mailing_address
-```
-
-Contains records of alumni stories, apparently added by alumni themselves.
-
-```
 fishbowl
 
 	fishbowlID
@@ -165,6 +149,22 @@ fishbowl_log
 ```
 
 Contains records of actions by users that earn fishbowl points.
+
+```
+history
+
+	historyID
+	contributor_name
+	contributor_email
+	contributor_website
+	contributor_story
+	current_location
+	positions_held
+	years_active
+	mailing_address
+```
+
+Contains records of alumni stories, apparently added by alumni themselves.
 
 ```
 libaction
@@ -359,12 +359,9 @@ show_hosts
 
 	showID (-> show)
 	username (-> users)
-	show_alias
 ```
 
 Contains the hosts for every show in `show`.
-
-* `show_alias` is already stored in `schedule_hosts`, so it could be removed.
 
 ```
 staff
