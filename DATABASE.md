@@ -74,7 +74,7 @@ def_rotations
 
 	rotationID
 	rotation_bin
-	binAbbr
+	bin_abbr
 ```
 
 Contains the index, name, and abbreviation of each rotation bin in the music library.
