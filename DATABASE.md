@@ -88,8 +88,6 @@ def_show_times
 
 Contains the index and name of each show time in the schedule.
 
-__TODO__: This table could be used to normalize columns in other tables, such as `schedule.start_time` and `schedule.end_time`.
-
 ```
 def_show_types
 
@@ -317,8 +315,7 @@ schedule
 	scheduleID
 	show_name
 	dayID (-> def_days)
-	start_time
-	end_time
+	show_timeID (-> def_show_times)
 	show_typeID (-> def_show_types)
 	description
 	general_genreID (-> def_general_genres)
@@ -351,8 +348,7 @@ show
 
 Contains a record of every show that has been logged in the logbook.
 
-* `show_name` is already stored in `schedule`, so it could be removed. However, a DJ may want to be able to have show-specific names.
-* `show_typeID` is already stored is `schedule`, but not all shows have a `scheduleID`.
+* `show_name` and `show_typeID` are already stored is `schedule`, but not all shows have a `scheduleID`.
 
 ```
 show_hosts
