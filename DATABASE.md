@@ -51,15 +51,6 @@ def_general_genres
 Contains the index and name of each general genre.
 
 ```
-def_mediums
-
-	mediumID
-	medium
-```
-
-Contains the index and name of each album medium (CD, Vinyl, etc.).
-
-```
 def_positions
 
 	positionID
@@ -190,7 +181,6 @@ libalbum
 	album_code
 	artistID (-> libartist)
 	labelID (-> liblabel)
-	mediumID (-> def_mediums)
 	genre
 	general_genreID (-> def_general_genres)
 	rotationID (-> def_rotations)
