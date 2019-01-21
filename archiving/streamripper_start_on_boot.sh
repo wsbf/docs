@@ -1,12 +1,13 @@
 #!/bin/sh
 
-URL_METADATA="https://wsbf.net/api/shows/streamripper.php"
-URL_STREAM="http://stream.wsbf.net:8000/low"
+CMD_METADATA="/usr/local/bin/fetch_external_metadata.sh"
+URL_STREAM="http://wsbf.net:8000/low"
+DST_PATH="/media/Jemaine/archives"
 
-X=`ps aux | grep -c "/usr/bin/streamripper $URL_STREAM"`
+X=$(ps aux | grep -c "/usr/bin/streamripper")
 
 if [ $X -lt 2 ] ; then
-     /usr/bin/streamripper "$URL_STREAM" -d /media/ZAutoLib/archives -s -E "curl $URL_METADATA" -D %T > /dev/null
+    /usr/bin/streamripper $URL_STREAM -E $CMD_METADATA -d $DST_PATH -D %T > /dev/null
 else
     echo "ERROR: Streamripper is running"
     ps aux | grep "/usr/bin/streamripper $URL_STREAM"
