@@ -2,7 +2,7 @@
 
 CMD_METADATA="/usr/local/bin/fetch_external_metadata.sh"
 URL_STREAM="http://wsbf.net:8000/low"
-DST_PATH="/media/Jemaine/archives"
+DST_PATH="/media/Bret/archives"
 
 X=$(ps aux | grep -c "/usr/bin/streamripper")
 
